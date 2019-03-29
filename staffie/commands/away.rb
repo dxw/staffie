@@ -4,9 +4,13 @@ require 'slack-ruby-bot'
 
 module Staffie
   module Commands
-    class SetAway < SlackRubyBot::Commands::Base
-      command 'set my away status' do |client, data, _match|
-        client.say(text: 'TODO', channel: data.channel)
+    class Away < SlackRubyBot::Commands::Base
+      scan 'away' do |client, data, _match|
+        client.say(
+          # TODO: Switch to DMs
+          channel: data.channel,
+          text: 'TODO'
+        )
       end
     end
   end

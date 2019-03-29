@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Staffie::Commands::SetAway do
+describe Staffie::Commands::Away do
   def app
     Staffie::Bot.instance
   end
