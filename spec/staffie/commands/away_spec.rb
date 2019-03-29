@@ -9,10 +9,5 @@ describe Staffie::Commands::Away do
 
   subject { app }
 
-  it 'returns TODO' do
-    expect(
-      message: "#{SlackRubyBot.config.user} set my away status",
-      channel: 'channel'
-    ).to respond_with_slack_message('TODO')
-  end
+  it 'returns attachments'
 end
