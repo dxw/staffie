@@ -6,7 +6,6 @@ require 'dotenv'
 Dotenv.load
 
 require 'staffie'
-require 'web'
 
 Thread.abort_on_exception = true
 
