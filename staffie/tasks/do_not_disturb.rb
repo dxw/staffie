@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'slack-ruby-client'
+require 'staffie/config'
 require 'time_difference'
 
 module Staffie
   module Tasks
+    Config.add_scope('dnd:write')
+
     def self.do_not_disturb(until_datetime:)
       # TODO: Pass in a user instead of fetching from ENV.
       client = Slack::Web::Client.new(token: ENV['SLACK_USER_AUTH_TOKEN'])
