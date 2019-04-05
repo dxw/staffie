@@ -6,6 +6,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 gem 'async-websocket'
 gem 'dotenv'
+gem 'oauth2'
 gem 'puma'
 gem 'slack-ruby-bot'
 gem 'slack-ruby-client'
