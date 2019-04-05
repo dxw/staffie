@@ -8,7 +8,9 @@ gem 'async-websocket'
 gem 'dotenv'
 gem 'puma'
 gem 'slack-ruby-bot'
+gem 'slack-ruby-client'
 gem 'sinatra'
+gem 'time_difference'
 
 group :development, :test do
   gem 'rake'
