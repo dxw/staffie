@@ -9,4 +9,4 @@ require 'require_all'
 
 require_all 'staffie'
 
-run Staffie::Web
+Staffie::Bot.run
