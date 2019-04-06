@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(__dir__) unless $LOAD_PATH.include?(__dir__)
 
 require 'dotenv'
 Dotenv.load
