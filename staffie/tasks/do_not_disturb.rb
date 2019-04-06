@@ -8,8 +8,9 @@ module Staffie
   module Tasks
     Config.add_scope('dnd:write')
 
-    def self.do_not_disturb(user, until_datetime:)
-      num_minutes = TimeDifference.between(until_datetime, DateTime.now)
+    def self.do_not_disturb(user)
+      end_datetime = 1.hour.from_now
+      num_minutes = TimeDifference.between(end_datetime, DateTime.now)
                                   .in_minutes
                                   .ceil
 
