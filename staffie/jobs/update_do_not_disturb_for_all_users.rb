@@ -12,20 +12,47 @@ module Staffie
       include Sidekiq::Worker
 
       def perform
-        from_now_on = DateTime.now..DateTime::Infinity.new
-
-        SlackEvent.where(event_type: :do_not_disturb, ends_at: from_now_on)
-                  .each do |slack_event|
-          starts_at = slack_event.starts_at
-          ends_at = slack_event.ends_at
-
-          next unless (starts_at..ends_at).cover?(DateTime.now)
-
-          Staffie::Tasks.do_not_disturb(
-            slack_event.user,
-            ends_at: ends_at
-          )
+        slack_events_to_process.each do |event|
+          Staffie::Tasks.do_not_disturb(event.user, ends_at: event.ends_at)
         end
+      end
+
+      private
+
+      def slack_events_to_process
+        now = DateTime.now
+        client = Slack::Web::Client.new(token: ENV['SLACK_API_TOKEN'])
+
+        batched_events_to_process =
+          SlackEvent.happening_at(now)
+                    .where(event_type: :do_not_disturb)
+                    .includes(:user)
+                    .each_slice(50)
+                    .map do |events|
+            ids = events.map { |event| event.user.slack_user_id }.uniq
+
+            response = client.dnd_teamInfo(users: ids.join(','))
+
+            events.select do |event|
+              dnd_status = response.users[event.user.slack_user_id]
+
+              next true unless dnd_status.dnd_enabled
+
+              dnd_has_started = DateTime.strptime(
+                dnd_status.next_dnd_start_ts.to_s, '%s'
+              ) <= now
+
+              next true unless dnd_has_started
+
+              dnd_ends_before_event = event.date_range.cover?(
+                DateTime.strptime(dnd_status.next_dnd_end_ts.to_s, '%s')
+              )
+
+              dnd_ends_before_event
+            end
+          end
+
+        batched_events_to_process.flatten
       end
     end
   end
