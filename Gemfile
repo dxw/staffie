@@ -7,10 +7,12 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 gem 'async-websocket'
 gem 'dotenv'
 gem 'oauth2'
+gem 'pg'
 gem 'puma'
 gem 'slack-ruby-bot'
 gem 'slack-ruby-client'
 gem 'sinatra'
+gem 'sinatra-activerecord'
 gem 'time_difference'
 
 group :development, :test do

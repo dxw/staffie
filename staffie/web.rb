@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'oauth2'
+require 'sinatra/activerecord'
 require 'sinatra/base'
 require 'slack-ruby-client'
 require 'staffie/config'
 
 module Staffie
   class Web < Sinatra::Base
+    register Sinatra::ActiveRecordExtension
+
     def initialize
       super
 
