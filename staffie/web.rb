@@ -5,6 +5,7 @@ require 'sinatra/activerecord'
 require 'sinatra/base'
 require 'slack-ruby-client'
 require 'staffie/config'
+require 'staffie/models/user'
 
 module Staffie
   class Web < Sinatra::Base
@@ -53,17 +54,24 @@ module Staffie
         raise 'OAuth state didn\'t match'
       end
 
-      access_token = @oauth_client.auth_code.get_token(
+      token_response = @oauth_client.auth_code.get_token(
         params['code'],
         redirect_uri: oauth_redirect_uri
       )
+      token = token_response.token
 
-      token = access_token.token
       client = Slack::Web::Client.new(token: token)
 
       raise 'OAuth access token invalid' unless client.auth_test.ok
 
-      puts token # TODO: Attach this to a user.
+      user_id = token_response.params['user_id']
+      user = User.find_by(slack_user_id: user_id)
+
+      if user.nil?
+        User.create!(slack_user_id: user_id, slack_token: token)
+      elsif user.slack_token != token
+        user.update!(slack_token: token)
+      end
 
       'Woof! You\'re authorized! Go back to Slack. Woof!'
     end
