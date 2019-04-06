@@ -3,6 +3,8 @@
 require 'sinatra/activerecord'
 
 class User < ActiveRecord::Base
+  has_many :slack_events
+
   validates_presence_of :slack_user_id
   validates_uniqueness_of :slack_user_id, message: 'already exists'
   validate :slack_user_id_is_local

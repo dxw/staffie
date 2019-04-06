@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_06_105042) do
+ActiveRecord::Schema.define(version: 2019_04_06_151411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "slack_events", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "event_type"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ends_at"], name: "index_slack_events_on_ends_at"
+    t.index ["event_type"], name: "index_slack_events_on_event_type"
+    t.index ["starts_at"], name: "index_slack_events_on_starts_at"
+    t.index ["user_id"], name: "index_slack_events_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "slack_user_id"
