@@ -15,12 +15,16 @@ module Staffie
       super
 
       @oauth_client = OAuth2::Client.new(
-        ENV['SLACK_CLIENT_ID'],
-        ENV['SLACK_CLIENT_SECRET'],
+        ENV['SLACK_CLIENT_ID'], ENV['SLACK_CLIENT_SECRET'],
         site: 'https://slack.com',
         authorize_url: '/oauth/authorize',
         token_url: '/api/oauth.access'
       )
+
+      slack_client = Slack::Web::Client.new(token: ENV['SLACK_API_TOKEN'])
+      test_response = slack_client.auth_test
+
+      @team = test_response.team if test_response.ok
     end
 
     enable :sessions
@@ -43,7 +47,7 @@ module Staffie
         scope: Config.scopes.join(', '),
         redirect_uri: oauth_redirect_uri,
         state: state,
-        team: params['team']
+        team: @team
       )
     end
 
