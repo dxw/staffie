@@ -31,12 +31,17 @@ GEM
       safe_yaml (~> 1.0.0)
     diff-lcs (1.3)
     dotenv (2.7.2)
+    et-orbi (1.1.7)
+      tzinfo
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
     foreman (0.85.0)
       thor (~> 0.19.1)
+    fugit (1.1.9)
+      et-orbi (~> 1.1, >= 1.1.7)
+      raabro (~> 1.1)
     gli (2.18.0)
     hashdiff (0.3.8)
     hashie (3.6.0)
@@ -58,6 +63,7 @@ GEM
     pg (1.1.4)
     public_suffix (3.0.3)
     puma (3.12.1)
+    raabro (1.1.6)
     rack (2.0.6)
     rack-protection (2.0.5)
       rack
@@ -85,6 +91,9 @@ GEM
       rack (>= 1.5.0)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
+    sidekiq-cron (1.1.0)
+      fugit (~> 1.1)
+      sidekiq (>= 4.2.1)
     sinatra (2.0.5)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -135,6 +144,7 @@ DEPENDENCIES
   require_all
   rspec
   sidekiq
+  sidekiq-cron
   sinatra
   sinatra-activerecord
   slack-ruby-bot

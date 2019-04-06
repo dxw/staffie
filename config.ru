@@ -8,6 +8,7 @@ Dotenv.load
 require 'require_all'
 
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 
 require_all 'staffie'
 
