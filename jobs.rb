@@ -7,8 +7,4 @@ Dotenv.load
 
 require 'require_all'
 
-require 'sidekiq/web'
-
 require_all 'staffie'
-
-run Rack::URLMap.new('/' => Staffie::Web, '/sidekiq' => Sidekiq::Web)

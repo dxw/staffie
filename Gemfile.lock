@@ -25,6 +25,7 @@ GEM
       async-io
       websocket-driver (~> 0.7.0)
     concurrent-ruby (1.1.5)
+    connection_pool (2.2.2)
     console (1.1.0)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -63,6 +64,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (12.3.2)
+    redis (4.1.0)
     require_all (2.0.0)
     rspec (3.8.0)
       rspec-core (~> 3.8.0)
@@ -78,6 +80,11 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     safe_yaml (1.0.5)
+    sidekiq (5.2.5)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack (>= 1.5.0)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     sinatra (2.0.5)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -127,6 +134,7 @@ DEPENDENCIES
   rake
   require_all
   rspec
+  sidekiq
   sinatra
   sinatra-activerecord
   slack-ruby-bot
