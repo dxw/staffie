@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json'
 require 'oauth2'
 require 'openssl'
 require 'sinatra/activerecord'
@@ -7,6 +8,7 @@ require 'sinatra/base'
 require 'slack-ruby-client'
 require 'staffie/config'
 require 'staffie/models/user'
+require 'staffie/tasks/show_user_slack_events'
 require 'time_difference'
 
 module Staffie
@@ -80,6 +82,33 @@ module Staffie
       end
 
       'Woof! You\'re authorized! Go back to Slack. Woof!'
+    end
+
+    post '/action' do
+      return status 403 unless verify_slack_request
+
+      payload = JSON.parse(params[:payload])
+
+      case payload['type']
+      when 'block_actions'
+        payload['actions'].each do |action|
+          case action['value']
+          when 'show_user_slack_events'
+            slack_channel_id = payload['channel']['id']
+            slack_user_id = payload['user']['id']
+
+            user = Models::User.find_by(slack_user_id: slack_user_id)
+
+            Tasks.show_user_slack_events(user, channel: slack_channel_id)
+          else
+            return status 400
+          end
+        end
+      else
+        return status 400
+      end
+
+      status 204
     end
 
     private
