@@ -6,7 +6,7 @@ require 'time_difference'
 
 module Staffie
   module Tasks
-    Config.add_scope('dnd:write')
+    Config.add_slack_user_scope('dnd:write')
 
     def self.do_not_disturb(user, ends_at:)
       num_minutes = TimeDifference.between(ends_at, DateTime.now)

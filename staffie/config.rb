@@ -2,14 +2,14 @@
 
 module Staffie
   module Config
-    @scopes = Set.new
+    @slack_user_scopes = Set.new
 
-    def self.scopes
-      @scopes.to_a
+    def self.slack_user_scopes
+      @slack_user_scopes.to_a
     end
 
-    def self.add_scope(scope)
-      @scopes.add(scope)
+    def self.add_slack_user_scope(scope)
+      @slack_user_scopes.add(scope)
     end
   end
 end

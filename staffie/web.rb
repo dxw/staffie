@@ -44,7 +44,7 @@ module Staffie
       session[:oauth_state] = state
 
       redirect @oauth_client.auth_code.authorize_url(
-        scope: Config.scopes.join(', '),
+        scope: Config.slack_user_scopes.join(','),
         redirect_uri: oauth_redirect_uri,
         state: state,
         team: @team
