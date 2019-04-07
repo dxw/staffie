@@ -9,5 +9,5 @@ describe Staffie::Commands::Away do
 
   subject { app }
 
-  it 'returns attachments'
+  it 'returns blocks'
 end
