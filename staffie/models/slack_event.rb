@@ -21,6 +21,14 @@ class SlackEvent < ActiveRecord::Base
     starts_at..ends_at
   end
 
+  def humanized_starts_at
+    starts_at.strftime('%H:%M on %d %B %Y')
+  end
+
+  def humanized_ends_at
+    ends_at.strftime('%H:%M on %d %B %Y')
+  end
+
   private
 
   def no_overlap

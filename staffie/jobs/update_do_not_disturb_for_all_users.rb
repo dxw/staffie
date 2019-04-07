@@ -14,6 +14,11 @@ module Staffie
       def perform
         slack_events_to_process.each do |event|
           Staffie::Tasks.do_not_disturb(event.user, ends_at: event.ends_at)
+
+          message = 'Snoozed notifications for you until '\
+                    "#{event.humanized_ends_at}!"
+
+          Staffie::Tasks.dm_user(event.user, message: message)
         end
       end
 
