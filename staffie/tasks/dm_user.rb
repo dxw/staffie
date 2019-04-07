@@ -9,12 +9,13 @@ module Staffie
       text += ' Woof!' if message && woof
 
       client = Slack::Web::Client.new(token: ENV['SLACK_API_TOKEN'])
-
-      client.chat_postMessage(
+      response = client.chat_postMessage(
         channel: user.slack_user_id,
         as_user: true,
         text: text.strip
       )
+
+      raise "Slack error: #{response.error}" unless response.ok
     end
   end
 end

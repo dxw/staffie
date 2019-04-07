@@ -14,8 +14,9 @@ module Staffie
                                   .ceil
 
       client = Slack::Web::Client.new(token: user.slack_token)
+      response = client.dnd_setSnooze(num_minutes: num_minutes)
 
-      client.dnd_setSnooze(num_minutes: num_minutes)
+      raise "Slack error: #{response.error}" unless response.ok
     end
   end
 end

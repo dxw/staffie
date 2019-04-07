@@ -41,6 +41,8 @@ module Staffie
 
             response = client.dnd_teamInfo(users: ids.join(','))
 
+            raise "Slack error: #{response.error}" unless response.ok
+
             events.select do |event|
               dnd_status = response.users[event.user.slack_user_id]
 
