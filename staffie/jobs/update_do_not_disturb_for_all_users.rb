@@ -29,11 +29,11 @@ module Staffie
         client = Slack::Web::Client.new(token: ENV['SLACK_API_TOKEN'])
 
         batched_events_to_process =
-          SlackEvent.happening_at(now)
-                    .where(event_type: :do_not_disturb)
-                    .includes(:user)
-                    .each_slice(50)
-                    .map do |events|
+          Models::SlackEvent.happening_at(now)
+                            .where(event_type: :do_not_disturb)
+                            .includes(:user)
+                            .each_slice(50)
+                            .map do |events|
             # There should only be one event per user, but if there were more,
             # this would be made more efficient by grouping by user (and maybe
             # only considering the earliest event).

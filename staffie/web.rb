@@ -71,10 +71,10 @@ module Staffie
       raise 'OAuth access token invalid' unless client.auth_test.ok
 
       user_id = token_response.params['user_id']
-      user = User.find_by(slack_user_id: user_id)
+      user = Models::User.find_by(slack_user_id: user_id)
 
       if user.nil?
-        User.create!(slack_user_id: user_id, slack_token: token)
+        Models::User.create!(slack_user_id: user_id, slack_token: token)
       elsif user.slack_token != token
         user.update!(slack_token: token)
       end
