@@ -15,7 +15,6 @@ module Staffie
 
       client = Slack::Web::Client.new(token: user.slack_token)
 
-      # TODO: Check that the current snooze isn't longer.
       client.dnd_setSnooze(num_minutes: num_minutes)
     end
   end

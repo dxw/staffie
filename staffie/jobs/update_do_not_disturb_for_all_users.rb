@@ -29,7 +29,10 @@ module Staffie
                     .includes(:user)
                     .each_slice(50)
                     .map do |events|
-            ids = events.map { |event| event.user.slack_user_id }.uniq
+            # There should only be one event per user, but if there were more,
+            # this would be made more efficient by grouping by user (and maybe
+            # only considering the earliest event).
+            ids = events.map { |event| event.user.slack_user_id }
 
             response = client.dnd_teamInfo(users: ids.join(','))
 
