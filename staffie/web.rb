@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'oauth2'
+require 'openssl'
 require 'sinatra/activerecord'
 require 'sinatra/base'
 require 'slack-ruby-client'
 require 'staffie/config'
 require 'staffie/models/user'
+require 'time_difference'
 
 module Staffie
   class Web < Sinatra::Base
@@ -78,6 +80,43 @@ module Staffie
       end
 
       'Woof! You\'re authorized! Go back to Slack. Woof!'
+    end
+
+    private
+
+    # Uses the algorithm from:
+    # https://api.slack.com/docs/verifying-requests-from-slack
+    def verify_slack_request
+      timestamp_header_key = 'HTTP_X_SLACK_REQUEST_TIMESTAMP'
+      slack_signature_header_key = 'HTTP_X_SLACK_SIGNATURE'
+
+      has_headers = request.has_header?(timestamp_header_key) &&
+                    request.has_header?(slack_signature_header_key)
+
+      return false unless has_headers
+
+      timestamp = request.get_header(timestamp_header_key)
+      slack_signature = request.get_header(slack_signature_header_key)
+
+      minutes_since_timestamp =
+        TimeDifference.between(DateTime.now, DateTime.strptime(timestamp, '%s'))
+                      .in_minutes
+
+      # This may be a replay.
+      return false if minutes_since_timestamp.abs > 5
+
+      request.body.rewind
+      request_body = request.body.read
+
+      basestring = "v0:#{timestamp}:#{request_body}"
+
+      expected_signature = "v0=#{OpenSSL::HMAC.hexdigest(
+        OpenSSL::Digest.new('sha256'),
+        ENV['SLACK_SIGNING_SECRET'],
+        basestring
+      )}"
+
+      expected_signature == slack_signature
     end
   end
 end
