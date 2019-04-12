@@ -70,7 +70,7 @@ module Staffie
     def self.show_user_slack_events(user, channel: nil)
       channel ||= user.slack_user_id
       slack_events = user.slack_events
-                         .select(%i[event_type starts_at ends_at])
+                         .select(%i[id event_type starts_at ends_at])
                          .where('ends_at > :now', now: DateTime.now)
                          .order(:starts_at)
                          .limit(20)
@@ -108,7 +108,7 @@ module Staffie
 
         {
           type: 'section',
-          block_id: "event_#{event.id}",
+          block_id: "slack_event_#{event.id}",
           text: {
             type: 'mrkdwn',
             text: "#{emoji} *#{event.humanized_starts_at}* to *#{event.humanized_ends_at}*"
