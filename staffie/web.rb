@@ -9,6 +9,8 @@ require 'slack-ruby-client'
 require 'staffie/config'
 require 'staffie/models/user'
 require 'staffie/tasks/delete_slack_event'
+require 'staffie/tasks/schedule_slack_event'
+require 'staffie/tasks/show_new_event_dialog'
 require 'staffie/tasks/show_user_slack_events'
 require 'time_difference'
 
@@ -92,11 +94,14 @@ module Staffie
 
       slack_channel_id = payload['channel']['id']
       slack_user_id = payload['user']['id']
+      trigger_id = payload['trigger_id']
 
       case payload['type']
       when 'block_actions'
         payload['actions'].each do |action|
           case action['value']
+          when 'new_do_not_disturb_event'
+            Tasks.show_new_event_dialog(trigger_id: trigger_id)
           when 'show_user_slack_events'
             user = Models::User.find_by!(slack_user_id: slack_user_id)
 
@@ -110,6 +115,25 @@ module Staffie
           else
             return status 400
           end
+        end
+      when 'dialog_submission'
+        submission = payload['submission']
+
+        case payload['callback_id']
+        when 'new_event_dialog'
+          user = Models::User.find_by(slack_user_id: slack_user_id)
+          starts_at = "#{submission['starts_at_date']} at " +
+                      submission['starts_at_time']
+          ends_at = "#{submission['ends_at_date']} at " +
+                    submission['ends_at_time']
+
+          Tasks.schedule_slack_event(
+            :do_not_disturb, user,
+            starts_at: starts_at, ends_at: ends_at
+          )
+          Tasks.show_user_slack_events(user, channel: slack_channel_id)
+        else
+          return status 400
         end
       else
         return status 400
