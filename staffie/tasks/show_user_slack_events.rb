@@ -9,7 +9,7 @@ module Staffie
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: '*Woof! I have the following events scheduled for you.*'
+          text: 'Woof! I have the following events scheduled for you.'
         }
       },
       {
@@ -101,7 +101,7 @@ module Staffie
       slack_events.map do |event|
         emoji = case event.event_type
                 when 'do_not_disturb'
-                  ':no_entry_sign:'
+                  ':shushing_face:'
                 else
                   ':calendar:'
                 end
@@ -111,7 +111,7 @@ module Staffie
           block_id: event.id.to_s,
           text: {
             type: 'mrkdwn',
-            text: "#{emoji} *#{event.humanized_starts_at}* to *#{event.humanized_ends_at}*"
+            text: "#{emoji} #{event.humanized_starts_at} to #{event.humanized_ends_at}"
           },
           accessory: {
             type: 'button',
