@@ -15,14 +15,38 @@ module Staffie
         slack_events_to_process.each do |event|
           Staffie::Tasks.do_not_disturb(event.user, ends_at: event.ends_at)
 
-          message = 'Snoozed notifications for you until '\
-                    "#{event.humanized_ends_at}!"
+          blocks = [
+            {
+              type: 'section',
+              text: {
+                type: 'plain_text',
+                text: 'Snoozed notifications for you until '\
+                      "#{event.humanized_ends_at}!"
+              }
+            },
+            { block_id: event.id.to_s }.merge(NOTIFICATION_ACTIONS_BLOCK)
+          ]
 
-          Staffie::Tasks.dm_user(event.user, message: message)
+          Staffie::Tasks.dm_user(event.user, blocks: blocks)
         end
       end
 
       private
+
+      NOTIFICATION_ACTIONS_BLOCK =
+        {
+          type: 'actions',
+          elements: [
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Skip event'
+              },
+              value: 'delete_slack_event'
+            }
+          ]
+        }.freeze
 
       def slack_events_to_process
         now = DateTime.now
