@@ -8,6 +8,7 @@ require 'sinatra/base'
 require 'slack-ruby-client'
 require 'staffie/config'
 require 'staffie/models/user'
+require 'staffie/tasks/delete_slack_event'
 require 'staffie/tasks/show_user_slack_events'
 require 'time_difference'
 
@@ -89,16 +90,22 @@ module Staffie
 
       payload = JSON.parse(params[:payload])
 
+      slack_channel_id = payload['channel']['id']
+      slack_user_id = payload['user']['id']
+
       case payload['type']
       when 'block_actions'
         payload['actions'].each do |action|
           case action['value']
           when 'show_user_slack_events'
-            slack_channel_id = payload['channel']['id']
-            slack_user_id = payload['user']['id']
+            user = Models::User.find_by!(slack_user_id: slack_user_id)
 
-            user = Models::User.find_by(slack_user_id: slack_user_id)
+            Tasks.show_user_slack_events(user, channel: slack_channel_id)
+          when 'delete_slack_event'
+            slack_event_id = action['block_id']
+            user = Models::User.find_by!(slack_user_id: slack_user_id)
 
+            Tasks.delete_slack_event(slack_event_id, user)
             Tasks.show_user_slack_events(user, channel: slack_channel_id)
           else
             return status 400

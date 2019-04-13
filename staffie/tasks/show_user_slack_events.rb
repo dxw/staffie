@@ -108,7 +108,7 @@ module Staffie
 
         {
           type: 'section',
-          block_id: "slack_event_#{event.id}",
+          block_id: event.id.to_s,
           text: {
             type: 'mrkdwn',
             text: "#{emoji} *#{event.humanized_starts_at}* to *#{event.humanized_ends_at}*"
