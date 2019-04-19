@@ -1,6 +1,6 @@
 # Staffie
 
-A Slack bot for scheduling time away from Slack and setting status and do no disturb automatically.
+A Slack bot for scheduling time away from Slack and setting do no disturb automatically.
 
 ## Development
 
