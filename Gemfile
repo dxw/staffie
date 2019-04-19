@@ -20,8 +20,9 @@ gem 'sinatra-activerecord'
 gem 'time_difference'
 
 group :development, :test do
-  gem 'rake'
   gem 'foreman'
+  gem 'rake'
+  gem 'rerun'
 end
 
 group :test do
